@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Betfair_Football_Markets.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="mID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ApiCall" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://www.betfair.com/www/sports/exchange/readonly/v1/bymarket?alt=json&amp;marketIds={0}&amp;rollupModel=STAKE&amp;types=RUNNER_DESCRIPTION,RUNNER_EXCHANGE_PRICES_BEST</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
