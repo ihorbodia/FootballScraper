@@ -1,5 +1,6 @@
 ﻿using Betfair_Football_Markets.Properties;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,10 +17,13 @@ namespace Betfair_Football_Markets
 {
     public partial class Form1 : Form
     {
+
+        BlockingCollection<string> errorList;
         public Form1()
         {
             InitializeComponent();
             LoadSettings();
+            errorList = new BlockingCollection<string>();
             outputGrid.CellFormatting += (s, e) =>
             {
                 if (e.Value == null)
@@ -67,44 +71,65 @@ namespace Betfair_Football_Markets
             await ReloadData();
         }
 
+        private async Task DownloadFileAsync(string marketId)
+        {
+            string url = string.Format("https://www.betfair.com/www/sports/exchange/readonly/v1/bymarket?alt=json&marketIds={0}&rollupModel=STAKE&types=RUNNER_DESCRIPTION,RUNNER_EXCHANGE_PRICES_BEST", marketId);
+            await Scrapper.GetObjAsync<Market>(url, (m, obj) =>
+            {
+                MarketNode mnode = null;
+                if (m == null)
+                {
+                    mnode = obj.EventTypes.FirstOrDefault().EventNodes.FirstOrDefault().MarketNodes.FirstOrDefault();
+                }
+                else
+                {
+                    MessageBox.Show("Something went wrong. Please check the ID: " + marketId + " and your connection.\r\n" + m);
+                    if (mnode == null)
+                    {
+                        mnode = new MarketNode();
+                        mnode.MarketId = marketId;
+                        MarketWrapper mwraper = new MarketWrapper(mnode);
+                    }
+                    errorList.Add(marketId);
+                }
+                serverList.Add(new MarketWrapper(mnode));
+            });
+        }
+
+        private async Task DownloadMultipleFilesAsync(IEnumerable<string> marketIds)
+        {
+            await Task.WhenAll(marketIds.Select(marketId => DownloadFileAsync(marketId)));
+        }
+
         private async Task ReloadData()
         {
             reloadBtn.Enabled = browseBtn.Enabled = recBtn.Enabled = false;
-            List<string> errorList;
-            var container = midBox.Text.Split(',').ToList().ChunkBy(50);
             serverData.DataSource = null;
             serverList.Clear();
-            foreach (var item in container)
+            try
             {
-                try
-                {
-                    var marketIds = string.Join(",", item);
-                    string url = string.Format("https://www.betfair.com/www/sports/exchange/readonly/v1/bymarket?alt=json&marketIds={0}&rollupModel=STAKE&types=RUNNER_DESCRIPTION,RUNNER_EXCHANGE_PRICES_BEST", marketIds);
-                    await Scrapper.GetObjAsync<Market>(url, (m, obj) =>
-                    {
-                        if (m == null)
-                        {
-                            foreach (var eventType in obj.EventTypes)
-                                foreach (var eventNode in eventType.EventNodes)
-                                    foreach (var node in eventNode.MarketNodes)
-                                    {
-                                        serverList.Add(new MarketWrapper(node));
-                                    }
-                        }
-                        else
-                            MessageBox.Show("Something went wrong. Please check the IDs and your connection.\r\n" + m);
-                        //errorList.Add()
-                    });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Something went wrong.\r\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                await DownloadMultipleFilesAsync(midBox.Text.Split(','));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Something went wrong.\r\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             Invoke(new MethodInvoker(() =>
             {
-                serverData.DataSource = serverList;
+                var sortedList = localList.Select(o => serverList.First(x => x.MarketID == o.MarketID)).ToList();
+                serverData.DataSource = sortedList;
             }));
+
+            foreach (DataGridViewRow row in serverData.Rows)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (errorList.Contains(cell.FormattedValue.ToString()))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Red;
+                    }
+                }
+            }
             reloadBtn.Enabled = browseBtn.Enabled = recBtn.Enabled = true;
             SaveSettings();
         }
@@ -206,26 +231,26 @@ namespace Betfair_Football_Markets
                     opt20 = serValue.Option20;
 
                     string
-                    rn1 = double.IsNaN(rt1) ? "-" : serValue.GetNode().Runners[0].Description.RunnerName,
-                    rn2 = double.IsNaN(rt2) ? "-" : serValue.GetNode().Runners[1].Description.RunnerName,
-                    rn3 = double.IsNaN(rt3) ? "-" : serValue.GetNode().Runners[2].Description.RunnerName,
-                    rn4 = double.IsNaN(rt4) ? "-" : serValue.GetNode().Runners[3].Description.RunnerName,
-                    rn5 = double.IsNaN(rt5) ? "-" : serValue.GetNode().Runners[4].Description.RunnerName,
-                    rn6 = double.IsNaN(rt6) ? "-" : serValue.GetNode().Runners[5].Description.RunnerName,
-                    rn7 = double.IsNaN(rt7) ? "-" : serValue.GetNode().Runners[6].Description.RunnerName,
-                    rn8 = double.IsNaN(rt8) ? "-" : serValue.GetNode().Runners[7].Description.RunnerName,
-                    rn9 = double.IsNaN(rt9) ? "-" : serValue.GetNode().Runners[8].Description.RunnerName,
-                    rn10 = double.IsNaN(rt10) ? "-" : serValue.GetNode().Runners[9].Description.RunnerName,
-                    rn11 = double.IsNaN(rt11) ? "-" : serValue.GetNode().Runners[10].Description.RunnerName,
-                    rn12 = double.IsNaN(rt12) ? "-" : serValue.GetNode().Runners[11].Description.RunnerName,
-                    rn13 = double.IsNaN(rt13) ? "-" : serValue.GetNode().Runners[12].Description.RunnerName,
-                    rn14 = double.IsNaN(rt14) ? "-" : serValue.GetNode().Runners[13].Description.RunnerName,
-                    rn15 = double.IsNaN(rt15) ? "-" : serValue.GetNode().Runners[14].Description.RunnerName,
-                    rn16 = double.IsNaN(rt16) ? "-" : serValue.GetNode().Runners[15].Description.RunnerName,
-                    rn17 = double.IsNaN(rt17) ? "-" : serValue.GetNode().Runners[16].Description.RunnerName,
-                    rn18 = double.IsNaN(rt18) ? "-" : serValue.GetNode().Runners[17].Description.RunnerName,
-                    rn19 = double.IsNaN(rt19) ? "-" : serValue.GetNode().Runners[18].Description.RunnerName,
-                    rn20 = double.IsNaN(rt20) ? "-" : serValue.GetNode().Runners[19].Description.RunnerName;
+                    rn1 = double.IsNaN(rt1) ? "-" : serValue.GetNode().Runners[0].RunnerName,
+                    rn2 = double.IsNaN(rt2) ? "-" : serValue.GetNode().Runners[1].RunnerName,
+                    rn3 = double.IsNaN(rt3) ? "-" : serValue.GetNode().Runners[2].RunnerName,
+                    rn4 = double.IsNaN(rt4) ? "-" : serValue.GetNode().Runners[3].RunnerName,
+                    rn5 = double.IsNaN(rt5) ? "-" : serValue.GetNode().Runners[4].RunnerName,
+                    rn6 = double.IsNaN(rt6) ? "-" : serValue.GetNode().Runners[5].RunnerName,
+                    rn7 = double.IsNaN(rt7) ? "-" : serValue.GetNode().Runners[6].RunnerName,
+                    rn8 = double.IsNaN(rt8) ? "-" : serValue.GetNode().Runners[7].RunnerName,
+                    rn9 = double.IsNaN(rt9) ? "-" : serValue.GetNode().Runners[8].RunnerName,
+                    rn10 = double.IsNaN(rt10) ? "-" : serValue.GetNode().Runners[9].RunnerName,
+                    rn11 = double.IsNaN(rt11) ? "-" : serValue.GetNode().Runners[10].RunnerName,
+                    rn12 = double.IsNaN(rt12) ? "-" : serValue.GetNode().Runners[11].RunnerName,
+                    rn13 = double.IsNaN(rt13) ? "-" : serValue.GetNode().Runners[12].RunnerName,
+                    rn14 = double.IsNaN(rt14) ? "-" : serValue.GetNode().Runners[13].RunnerName,
+                    rn15 = double.IsNaN(rt15) ? "-" : serValue.GetNode().Runners[14].RunnerName,
+                    rn16 = double.IsNaN(rt16) ? "-" : serValue.GetNode().Runners[15].RunnerName,
+                    rn17 = double.IsNaN(rt17) ? "-" : serValue.GetNode().Runners[16].RunnerName,
+                    rn18 = double.IsNaN(rt18) ? "-" : serValue.GetNode().Runners[17].RunnerName,
+                    rn19 = double.IsNaN(rt19) ? "-" : serValue.GetNode().Runners[18].RunnerName,
+                    rn20 = double.IsNaN(rt20) ? "-" : serValue.GetNode().Runners[19].RunnerName;
 
                     rateList.Add(new RatioData(rt1, rt2, rt3, rt4, rt5, rt6, rt7, rt8, rt9, rt10, rt11, rt12, rt13, rt14, rt15, rt16, rt17, rt18, rt19, rt20,
                         rn1, rn2, rn3, rn4, rn5, rn6, rn7, rn8, rn9, rn10, rn11, rn12, rn13, rn14, rn15, rn16, rn17, rn18, rn19, rn20, localValue.MarketID,

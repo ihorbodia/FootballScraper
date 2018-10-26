@@ -36,7 +36,7 @@ namespace Betfair_Football_Markets
     {
         public string SelectionId { get; set; }
         public string Handicap { get; set; }
-        public Description Description { get; set; }
+        public string RunnerName { get; set; }
         public Exchange Exchange;
     }
 
@@ -66,14 +66,14 @@ namespace Betfair_Football_Markets
             this.r = r;
         }
 
-        public string RunnerName { get { return r.Description.RunnerName; } }
+        public string RunnerName { get { return r.RunnerName; } }
         public double LayAll
         {
             get => r.Exchange.AvailableToLay == null || r.Exchange.AvailableToLay.Length < 1 ? double.NaN : r.Exchange.AvailableToLay[0].Price;
         }
     }
 
-    public class MarketWrapper
+    public class MarketWrapper : IWrapper
     {
         private MarketNode n;
 
@@ -82,27 +82,30 @@ namespace Betfair_Football_Markets
             this.n = n;
         }
 
+        string IWrapper.MarketID { get => n.MarketId; }
         public virtual string MarketID { get => n.MarketId; }
-        public virtual double Option1 { get => n.Runners.Length < 1 ? double.NaN : (new RunnerWrapper(n.Runners[0])).LayAll; }
-        public virtual double Option2 { get => n.Runners.Length < 2 ? double.NaN : (new RunnerWrapper(n.Runners[1])).LayAll; }
-        public virtual double Option3 { get => n.Runners.Length < 3 ? double.NaN : (new RunnerWrapper(n.Runners[2])).LayAll; }
-        public virtual double Option4 { get => n.Runners.Length < 4 ? double.NaN : (new RunnerWrapper(n.Runners[3])).LayAll; }
-        public virtual double Option5 { get => n.Runners.Length < 5 ? double.NaN : (new RunnerWrapper(n.Runners[4])).LayAll; }
-        public virtual double Option6 { get => n.Runners.Length < 6 ? double.NaN : (new RunnerWrapper(n.Runners[5])).LayAll; }
-        public virtual double Option7 { get => n.Runners.Length < 7 ? double.NaN : (new RunnerWrapper(n.Runners[6])).LayAll; }
-        public virtual double Option8 { get => n.Runners.Length < 8 ? double.NaN : (new RunnerWrapper(n.Runners[7])).LayAll; }
-        public virtual double Option9 { get => n.Runners.Length < 9 ? double.NaN : (new RunnerWrapper(n.Runners[8])).LayAll; }
-        public virtual double Option10 { get => n.Runners.Length < 10 ? double.NaN : (new RunnerWrapper(n.Runners[9])).LayAll; }
-        public virtual double Option11 { get => n.Runners.Length < 11 ? double.NaN : (new RunnerWrapper(n.Runners[10])).LayAll; }
-        public virtual double Option12 { get => n.Runners.Length < 12 ? double.NaN : (new RunnerWrapper(n.Runners[11])).LayAll; }
-        public virtual double Option13 { get => n.Runners.Length < 13 ? double.NaN : (new RunnerWrapper(n.Runners[12])).LayAll; }
-        public virtual double Option14 { get => n.Runners.Length < 14 ? double.NaN : (new RunnerWrapper(n.Runners[13])).LayAll; }
-        public virtual double Option15 { get => n.Runners.Length < 15 ? double.NaN : (new RunnerWrapper(n.Runners[14])).LayAll; }
-        public virtual double Option16 { get => n.Runners.Length < 16 ? double.NaN : (new RunnerWrapper(n.Runners[15])).LayAll; }
-        public virtual double Option17 { get => n.Runners.Length < 17 ? double.NaN : (new RunnerWrapper(n.Runners[16])).LayAll; }
-        public virtual double Option18 { get => n.Runners.Length < 18 ? double.NaN : (new RunnerWrapper(n.Runners[17])).LayAll; }
-        public virtual double Option19 { get => n.Runners.Length < 19 ? double.NaN : (new RunnerWrapper(n.Runners[18])).LayAll; }
-        public virtual double Option20 { get => n.Runners.Length < 20 ? double.NaN : (new RunnerWrapper(n.Runners[19])).LayAll; }
+        public virtual double Option1 { get => n.Runners == null || n.Runners.Length < 1 ? double.NaN : (new RunnerWrapper(n.Runners[0])).LayAll; private set { } }
+        public virtual double Option2 { get => n.Runners == null || n.Runners.Length < 2 ? double.NaN : (new RunnerWrapper(n.Runners[1])).LayAll; private set { } }
+        public virtual double Option3 { get => n.Runners == null || n.Runners.Length < 3 ? double.NaN : (new RunnerWrapper(n.Runners[2])).LayAll; private set { } }
+        public virtual double Option4 { get => n.Runners == null || n.Runners.Length < 4 ? double.NaN : (new RunnerWrapper(n.Runners[3])).LayAll; private set { } }
+        public virtual double Option5 { get => n.Runners == null || n.Runners.Length < 5 ? double.NaN : (new RunnerWrapper(n.Runners[4])).LayAll; private set { } }
+        public virtual double Option6 { get => n.Runners == null || n.Runners.Length < 6 ? double.NaN : (new RunnerWrapper(n.Runners[5])).LayAll; private set { } }
+        public virtual double Option7 { get => n.Runners == null || n.Runners.Length < 7 ? double.NaN : (new RunnerWrapper(n.Runners[6])).LayAll; private set { } }
+        public virtual double Option8 { get => n.Runners == null || n.Runners.Length < 8 ? double.NaN : (new RunnerWrapper(n.Runners[7])).LayAll; private set { } }
+        public virtual double Option9 { get => n.Runners == null || n.Runners.Length < 9 ? double.NaN : (new RunnerWrapper(n.Runners[8])).LayAll; private set { } }
+        public virtual double Option10 { get => n.Runners == null || n.Runners.Length < 10 ? double.NaN : (new RunnerWrapper(n.Runners[9])).LayAll; private set { } }
+        public virtual double Option11 { get => n.Runners == null || n.Runners.Length < 11 ? double.NaN : (new RunnerWrapper(n.Runners[10])).LayAll; private set { } }
+        public virtual double Option12 { get => n.Runners == null || n.Runners.Length < 12 ? double.NaN : (new RunnerWrapper(n.Runners[11])).LayAll; private set { } }
+        public virtual double Option13 { get => n.Runners == null || n.Runners.Length < 13 ? double.NaN : (new RunnerWrapper(n.Runners[12])).LayAll; private set { } }
+        public virtual double Option14 { get => n.Runners == null || n.Runners.Length < 14 ? double.NaN : (new RunnerWrapper(n.Runners[13])).LayAll; private set { } }
+        public virtual double Option15 { get => n.Runners == null || n.Runners.Length < 15 ? double.NaN : (new RunnerWrapper(n.Runners[14])).LayAll; private set { } }
+        public virtual double Option16 { get => n.Runners == null || n.Runners.Length < 16 ? double.NaN : (new RunnerWrapper(n.Runners[15])).LayAll; private set { } }
+        public virtual double Option17 { get => n.Runners == null || n.Runners.Length < 17 ? double.NaN : (new RunnerWrapper(n.Runners[16])).LayAll; private set { } }
+        public virtual double Option18 { get => n.Runners == null || n.Runners.Length < 18 ? double.NaN : (new RunnerWrapper(n.Runners[17])).LayAll; private set { } }
+        public virtual double Option19 { get => n.Runners == null || n.Runners.Length < 19 ? double.NaN : (new RunnerWrapper(n.Runners[18])).LayAll; private set { } }
+        public virtual double Option20 { get => n.Runners == null || n.Runners.Length < 20 ? double.NaN : (new RunnerWrapper(n.Runners[19])).LayAll; private set { } }
+
+
 
         public MarketNode GetNode()
         {
