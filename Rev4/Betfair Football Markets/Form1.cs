@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -24,6 +26,7 @@ namespace Betfair_Football_Markets
                 {
                     return;
                 }
+
                 if (e.ColumnIndex > 0 && Regex.IsMatch(e.Value.ToString(), "[0-9]{3}.+"))
                 {
                     e.CellStyle.BackColor = Color.Green;
@@ -61,41 +64,47 @@ namespace Betfair_Football_Markets
 
         private async void reloadBtn_Click(object sender, EventArgs e)
         {
-            ReloadData();
+            await ReloadData();
         }
 
         private async Task ReloadData()
         {
             reloadBtn.Enabled = browseBtn.Enabled = recBtn.Enabled = false;
-            try
+            List<string> errorList;
+            var container = midBox.Text.Split(',').ToList().ChunkBy(50);
+            serverData.DataSource = null;
+            serverList.Clear();
+            foreach (var item in container)
             {
-                var marketIds = midBox.Text;
-                string url = String.Format("https://www.betfair.com/www/sports/exchange/readonly/v1/bymarket?alt=json&marketIds={0}&rollupModel=STAKE&types=RUNNER_DESCRIPTION,RUNNER_EXCHANGE_PRICES_BEST", marketIds);
-                serverData.DataSource = null;
-                serverList.Clear();
-                await Scrapper.GetObjAsync<Market>(url, (m, obj) =>
+                try
                 {
-                    if (m == null)
+                    var marketIds = string.Join(",", item);
+                    string url = string.Format("https://www.betfair.com/www/sports/exchange/readonly/v1/bymarket?alt=json&marketIds={0}&rollupModel=STAKE&types=RUNNER_DESCRIPTION,RUNNER_EXCHANGE_PRICES_BEST", marketIds);
+                    await Scrapper.GetObjAsync<Market>(url, (m, obj) =>
                     {
-                        foreach (var eventType in obj.EventTypes)
-                            foreach (var eventNode in eventType.EventNodes)
-                                foreach (var node in eventNode.MarketNodes)
-                                {
-                                    serverList.Add(new MarketWrapper(node));
-                                }
-                    }
-                    else
-                        MessageBox.Show("Something went wrong. Please check the IDs and your connection.\r\n" + m);
-                });
-                Invoke(new MethodInvoker(() =>
+                        if (m == null)
+                        {
+                            foreach (var eventType in obj.EventTypes)
+                                foreach (var eventNode in eventType.EventNodes)
+                                    foreach (var node in eventNode.MarketNodes)
+                                    {
+                                        serverList.Add(new MarketWrapper(node));
+                                    }
+                        }
+                        else
+                            MessageBox.Show("Something went wrong. Please check the IDs and your connection.\r\n" + m);
+                        //errorList.Add()
+                    });
+                }
+                catch (Exception ex)
                 {
-                    serverData.DataSource = serverList;
-                }));
+                    MessageBox.Show("Something went wrong.\r\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            catch (Exception ex)
+            Invoke(new MethodInvoker(() =>
             {
-                MessageBox.Show("Something went wrong.\r\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                serverData.DataSource = serverList;
+            }));
             reloadBtn.Enabled = browseBtn.Enabled = recBtn.Enabled = true;
             SaveSettings();
         }
@@ -113,6 +122,9 @@ namespace Betfair_Football_Markets
 
             if (dlg.ShowDialog() == DialogResult.OK)
                 pathBox.Text = dlg.FileName;
+
+            CultureInfo ci = new CultureInfo("en-GB");
+            Thread.CurrentThread.CurrentCulture = ci;
 
             try
             {
