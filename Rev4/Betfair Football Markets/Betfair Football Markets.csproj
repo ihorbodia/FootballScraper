@@ -69,7 +69,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="IWrapper.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Market.cs" />
     <Compile Include="Program.cs" />
