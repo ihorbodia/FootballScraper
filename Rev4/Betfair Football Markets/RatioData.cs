@@ -69,10 +69,11 @@ namespace Betfair_Football_Markets
         private string rn20;
 
         private string mid;
-        public RatioData(double rt1, double rt2, double rt3, double rt4, double rt5, double rt6, double rt7, double rt8, double rt9, double rt10, double rt11, double rt12, double rt13, double rt14, double rt15, double rt16, double rt17, double rt18, double rt19, double rt20,
+		private string comment;
+		public RatioData(double rt1, double rt2, double rt3, double rt4, double rt5, double rt6, double rt7, double rt8, double rt9, double rt10, double rt11, double rt12, double rt13, double rt14, double rt15, double rt16, double rt17, double rt18, double rt19, double rt20,
             string rn1, string rn2, string rn3, string rn4, string rn5, string rn6, string rn7, string rn8, string rn9, string rn10, string rn11, string rn12, string rn13, string rn14, string rn15, string rn16, string rn17, string rn18, string rn19, string rn20, string mid, 
             double opt1, double opt2, double opt3, double opt4, double opt5, double opt6, double opt7, double opt8, double opt9, double opt10, double opt11, double opt12, double opt13, double opt14,
-            double opt15, double opt16, double opt17, double opt18, double opt19, double opt20)
+            double opt15, double opt16, double opt17, double opt18, double opt19, double opt20, string comment)
         {
             this.rt1 = rt1;
             this.rt2 = rt2;
@@ -137,11 +138,13 @@ namespace Betfair_Football_Markets
             this.rn19 = rn19;
             this.rn20 = rn20;
             this.mid = mid;
+			this.comment = comment;
         }
 
         public string MarketID { get => mid; }
+		public string Comment { get => comment; }
 
-        public string Name_1 { get => rn1; }
+		public string Name_1 { get => rn1; }
         public string Perc_1 { get => (rt1 * 100).ToString(".00"); }
 
         public string Name_2 { get => rn2; }

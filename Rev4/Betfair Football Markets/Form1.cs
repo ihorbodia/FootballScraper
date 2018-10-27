@@ -254,7 +254,7 @@ namespace Betfair_Football_Markets
 
                     rateList.Add(new RatioData(rt1, rt2, rt3, rt4, rt5, rt6, rt7, rt8, rt9, rt10, rt11, rt12, rt13, rt14, rt15, rt16, rt17, rt18, rt19, rt20,
                         rn1, rn2, rn3, rn4, rn5, rn6, rn7, rn8, rn9, rn10, rn11, rn12, rn13, rn14, rn15, rn16, rn17, rn18, rn19, rn20, localValue.MarketID,
-                        opt1, opt2, opt3, opt4, opt5, opt6, opt7, opt8, opt9, opt10, opt11, opt12, opt13, opt14, opt15, opt16, opt17, opt18, opt19, opt20));
+                        opt1, opt2, opt3, opt4, opt5, opt6, opt7, opt8, opt9, opt10, opt11, opt12, opt13, opt14, opt15, opt16, opt17, opt18, opt19, opt20, localValue.Comment));
                 }
 
                 if (excCheck.Checked)

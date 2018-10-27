@@ -14,10 +14,10 @@ namespace Betfair_Football_Markets
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
-                    string[] values = line.Split(',').Skip(1).ToArray();
-                    if (values.Length == 0)
+                    string[] values = line.Split(',').ToArray();
+					if (values.Length == 0)
                         continue;
-                    if (values[0].StartsWith("#") || values[0] == string.Empty)
+                    if (values[1].StartsWith("#") || values[1] == string.Empty)
                         continue;
                     yield return (T)Activator.CreateInstance(typeof(T), new object[] { values });
                 }

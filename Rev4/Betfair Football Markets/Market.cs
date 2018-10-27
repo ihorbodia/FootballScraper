@@ -27,6 +27,7 @@ namespace Betfair_Football_Markets
 
     public class MarketNode
     {
+		public string Comment { get; set; }
         public string MarketId { get; set; }
         public string IsMarketDataDelayed { get; set; }
         public Runner[] Runners { get; set; }
@@ -82,7 +83,7 @@ namespace Betfair_Football_Markets
             this.n = n;
         }
 
-        public virtual string MarketID { get => n.MarketId; }
+		public virtual string MarketID { get => n.MarketId; }
         public virtual double Option1 { get => n.Runners == null || n.Runners.Length < 1 ? double.NaN : (new RunnerWrapper(n.Runners[0])).LayAll; private set { } }
         public virtual double Option2 { get => n.Runners == null || n.Runners.Length < 2 ? double.NaN : (new RunnerWrapper(n.Runners[1])).LayAll; private set { } }
         public virtual double Option3 { get => n.Runners == null || n.Runners.Length < 3 ? double.NaN : (new RunnerWrapper(n.Runners[2])).LayAll; private set { } }
@@ -103,8 +104,6 @@ namespace Betfair_Football_Markets
         public virtual double Option18 { get => n.Runners == null || n.Runners.Length < 18 ? double.NaN : (new RunnerWrapper(n.Runners[17])).LayAll; private set { } }
         public virtual double Option19 { get => n.Runners == null || n.Runners.Length < 19 ? double.NaN : (new RunnerWrapper(n.Runners[18])).LayAll; private set { } }
         public virtual double Option20 { get => n.Runners == null || n.Runners.Length < 20 ? double.NaN : (new RunnerWrapper(n.Runners[19])).LayAll; private set { } }
-
-
 
         public MarketNode GetNode()
         {

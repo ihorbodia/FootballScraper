@@ -13,11 +13,13 @@ namespace Betfair_Football_Markets
         {
         }
         string id;
-        double[] options;
+		string comment;
+		double[] options;
         public ConstMarketWrapper(string[] values) : base(null)
         {
-            id = NormalizeMechantId(values[0]);
-            options = Array.ConvertAll(values.Skip(1).ToArray(), x =>{
+			comment = values[0];
+			id = NormalizeMechantId(values[1]);
+            options = Array.ConvertAll(values.Skip(2).ToArray(), x =>{
                 double d;
                 if (!double.TryParse(x, out d))
                     return double.NaN;
@@ -25,7 +27,8 @@ namespace Betfair_Football_Markets
             });
         }
 
-        public override string MarketID { get => id; }
+		public string Comment { get => comment; }
+		public override string MarketID { get => id; }
         public override double Option1 { get => options.Length < 1 ? double.NaN : options[0]; }
         public override double Option2 { get => options.Length < 2 ? double.NaN : options[1]; }
         public override double Option3 { get => options.Length < 3 ? double.NaN : options[2]; }
