@@ -73,7 +73,7 @@ namespace Betfair_Football_Markets
         }
     }
 
-    public class MarketWrapper : IWrapper
+    public class MarketWrapper 
     {
         private MarketNode n;
 
@@ -82,7 +82,6 @@ namespace Betfair_Football_Markets
             this.n = n;
         }
 
-        string IWrapper.MarketID { get => n.MarketId; }
         public virtual string MarketID { get => n.MarketId; }
         public virtual double Option1 { get => n.Runners == null || n.Runners.Length < 1 ? double.NaN : (new RunnerWrapper(n.Runners[0])).LayAll; private set { } }
         public virtual double Option2 { get => n.Runners == null || n.Runners.Length < 2 ? double.NaN : (new RunnerWrapper(n.Runners[1])).LayAll; private set { } }
