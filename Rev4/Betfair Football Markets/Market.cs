@@ -30,15 +30,16 @@ namespace Betfair_Football_Markets
 		public string Comment { get; set; }
         public string MarketId { get; set; }
         public string IsMarketDataDelayed { get; set; }
-        public Runner[] Runners { get; set; }
+		public string IsMarketDataVirtual { get; set; }
+		public Runner[] Runners { get; set; }
     }
 
-    public class Runner
+	public class Runner
     {
         public string SelectionId { get; set; }
         public string Handicap { get; set; }
-        public string RunnerName { get; set; }
-        public Exchange Exchange;
+		public Description Description { get; set; }
+		public Exchange Exchange;
     }
 
     public class Exchange
@@ -67,7 +68,7 @@ namespace Betfair_Football_Markets
             this.r = r;
         }
 
-        public string RunnerName { get { return r.RunnerName; } }
+        public string RunnerName { get { return r.Description.RunnerName; } }
         public double LayAll
         {
             get => r.Exchange.AvailableToLay == null || r.Exchange.AvailableToLay.Length < 1 ? double.NaN : r.Exchange.AvailableToLay[0].Price;
