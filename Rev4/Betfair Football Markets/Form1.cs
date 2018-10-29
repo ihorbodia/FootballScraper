@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,7 +81,6 @@ namespace Betfair_Football_Markets
                 }
                 else
                 {
-                    MessageBox.Show("Something went wrong. Please check the ID: " + marketId + " and your connection.\r\n" + m);
                     if (mnode == null)
                     {
                         mnode = new MarketNode();

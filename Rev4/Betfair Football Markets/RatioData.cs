@@ -146,10 +146,10 @@ namespace Betfair_Football_Markets
 
 		public string Name_1 { get => rn1; }
         public string Perc_1 { get => (rt1 * 100).ToString(".00"); }
+		public string Option1 { get => (opt1).ToString(".##"); }
 
-        public string Name_2 { get => rn2; }
+		public string Name_2 { get => rn2; }
         public string Perc_2 { get => (rt2 * 100).ToString(".00"); }
-
         public string Option2 { get => (opt2).ToString(".##"); }
 
         public string Name_3 { get => rn3; }
